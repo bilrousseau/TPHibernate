@@ -11,39 +11,39 @@ public class Personne {
 	
 	@Id
 	@GeneratedValue
-	@Column(name="pers_id")
+	@Column(name="pers_id", nullable=false)
 	private Integer id;
 	
-	@Column(name="pers_civilite")
-	private Civilite civilite;
+	@Column(name="pers_civilite", nullable=false)
+	private String civilite;
 	
-	@Column(name="pers_nom")
+	@Column(name="pers_nom", nullable=false)
 	private String nom;
 	
-	@Column(name="pers_prenom")
+	@Column(name="pers_prenom", nullable=false)
 	private String prenom;
 	
 	@Column(name="pers_datenaissance")
 	private Date dateNaissance;
 	
-	@Column(name="pers_numtel")
+	@Column(name="pers_numtel", nullable=false)
 	private String numTel;
 	
-	@Column(name="pers_adresse")
+	@Column(name="pers_adresse", nullable=false)
 	private String adresse;
 	
-	@Column(name="pers_cp")
+	@Column(name="pers_cp", nullable=false)
 	private String cp;
 	
-	@Column(name="pers_ville")
+	@Column(name="pers_ville", nullable=false)
 	private String ville;
 
-	public Civilite getCivilite() {
+	public String getCivilite() {
 		return civilite;
 	}
 
 	public void setCivilite(Civilite civilite) {
-		this.civilite = civilite;
+		this.civilite = civilite.getNomCourt();
 	}
 
 	public String getNom() {

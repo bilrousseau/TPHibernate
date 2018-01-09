@@ -11,7 +11,7 @@ public interface IReferentiel {
 	
 	Boolean insererPersonne(Personne p);
 	
-	Boolean modifierPersonne(Integer id);
+	Boolean modifierPersonne(Integer id, Personne p);
 	
 	Boolean supprimerPersonne(Integer id);
 	

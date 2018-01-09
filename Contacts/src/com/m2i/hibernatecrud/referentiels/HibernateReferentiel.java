@@ -42,12 +42,19 @@ public class HibernateReferentiel implements IReferentiel {
 
 	@Override
 	public Boolean insererPersonne(Personne p) {
-		// TODO Auto-generated method stub
-		return null;
+		sessionFactory = HibernateUtils.getSessionFactory();
+		session = sessionFactory.openSession();
+		
+		session.save(p);
+		
+		session.close();
+		sessionFactory.close();
+		
+		return true;
 	}
 
 	@Override
-	public Boolean modifierPersonne(Integer id) {
+	public Boolean modifierPersonne(Integer id, Personne p) {
 		// TODO Auto-generated method stub
 		return null;
 	}
