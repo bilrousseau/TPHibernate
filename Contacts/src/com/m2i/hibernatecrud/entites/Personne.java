@@ -105,6 +105,12 @@ public class Personne {
 	public Integer getId() {
 		return id;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Personne [id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom
+				+ ", dateNaissance=" + dateNaissance + ", numTel=" + numTel + ", adresse=" + adresse + ", cp=" + cp
+				+ ", ville=" + ville + "]";
+	}
 	
 }
