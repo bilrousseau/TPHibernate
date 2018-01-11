@@ -151,8 +151,7 @@ public class JdbcReferentiel implements IReferentiel {
 
 	@Override
 	public Boolean personneExiste(Personne p) {
-		// TODO Auto-generated method stub
-		return null;
+		return p.equals(this.recupererPersonne(p.getId()));
 	}
 	
 	public Boolean effacerToutesPersonnes() {
