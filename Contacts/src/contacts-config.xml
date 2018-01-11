@@ -6,7 +6,7 @@
 <hibernate-configuration>
         <session-factory>
                <property name="hibernate.connection.url">
-                   jdbc:mysql://localhost:3308/schema_contacts?useSSL=false&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC
+                   jdbc:mysql://localhost:3306/schema_contacts?useSSL=false&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC
                </property>
                <property name="hibernate.connection.username">
                    user_hibernate

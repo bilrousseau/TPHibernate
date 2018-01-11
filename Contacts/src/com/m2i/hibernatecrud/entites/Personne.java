@@ -23,6 +23,7 @@ public class Personne {
 	@Column(name="pers_prenom", nullable=false)
 	private String prenom;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name="pers_datenaissance")
 	private Date dateNaissance;
 	
@@ -37,6 +38,38 @@ public class Personne {
 	
 	@Column(name="pers_ville", nullable=false)
 	private String ville;
+
+	public Personne() {}
+	
+	public Personne(Civilite civilite, String nom, String prenom, Date dateNaissance, String numTel, String adresse,
+			String cp, String ville) {
+		super();
+		this.civilite = civilite.getNomCourt();
+		this.nom = nom;
+		this.prenom = prenom;
+		this.dateNaissance = dateNaissance;
+		this.numTel = numTel;
+		this.adresse = adresse;
+		this.cp = cp;
+		this.ville = ville;
+	}
+
+
+
+	public Personne(Integer id, Civilite civilite, String nom, String prenom, Date dateNaissance, String numTel,
+			String adresse, String cp, String ville) {
+		this.id = id;
+		this.civilite = civilite.getNomCourt();
+		this.nom = nom;
+		this.prenom = prenom;
+		this.dateNaissance = dateNaissance;
+		this.numTel = numTel;
+		this.adresse = adresse;
+		this.cp = cp;
+		this.ville = ville;
+	}
+
+
 
 	public String getCivilite() {
 		return civilite;

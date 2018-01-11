@@ -7,12 +7,15 @@ import java.util.Date;
 import com.m2i.hibernatecrud.entites.Civilite;
 import com.m2i.hibernatecrud.entites.Personne;
 import com.m2i.hibernatecrud.referentiels.HibernateReferentiel;
+import com.m2i.hibernatecrud.referentiels.JdbcReferentiel;
 
 public class Tester {
 
 	public static void main(String[] args) {
 		HibernateReferentiel hibRef = new HibernateReferentiel();
+		JdbcReferentiel jdbcRef = new JdbcReferentiel();
 		
+		System.exit(200);
 		Personne p = hibRef.recupererPersonne(1);
 		System.out.println(p);
 		
