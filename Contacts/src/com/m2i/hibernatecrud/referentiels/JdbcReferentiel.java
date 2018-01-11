@@ -10,8 +10,9 @@ import java.util.List;
 import com.m2i.hibernatecrud.db.DB;
 import com.m2i.hibernatecrud.entites.Civilite;
 import com.m2i.hibernatecrud.entites.Personne;
+import com.m2i.hibernatecrud.utils.ConvertisseurCivilite;
 
-public class JdbcReferentiel implements IReferentiel {
+public class JdbcReferentiel extends ConvertisseurCivilite implements IReferentiel  {
 	private List<Personne> listePersonnes;
 	
 	public JdbcReferentiel() {
@@ -75,7 +76,7 @@ public class JdbcReferentiel implements IReferentiel {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String query = "INSERT INTO schema_contacts.personnes (pers_civilite, pers_nom, pers_prenom, pers_datenaissance, pers_numtel, pers_adresse, pers_cp, pers_ville)" 
 					+ " VALUES ("
-					+  DB.parseToSql(p.getCivilite()) +  ", " + DB.parseToSql(p.getNom())
+					+  DB.parseToSql(p.getCivilite().getNomCourt()) +  ", " + DB.parseToSql(p.getNom())
 					+  ", " + DB.parseToSql(p.getPrenom()) +  ", " + DB.parseToSql(sdf.format(p.getDateNaissance()))
 					+  ", " + DB.parseToSql(p.getNumTel()) +  ", " + DB.parseToSql(p.getAdresse())
 					+  ", " + DB.parseToSql(p.getCp()) +  ", " + DB.parseToSql(p.getVille())
@@ -102,7 +103,7 @@ public class JdbcReferentiel implements IReferentiel {
 			
 			
 			if (p.getCivilite() != null)
-				queryStrings.add("pers_civilite = " + DB.parseToSql(p.getCivilite()));
+				queryStrings.add("pers_civilite = " + DB.parseToSql(p.getCivilite().getNomCourt()));
 			if (p.getNom() != null)
 				queryStrings.add("pers_nom = " + DB.parseToSql(p.getNom()));
 			if (p.getPrenom() != null)
@@ -164,18 +165,6 @@ public class JdbcReferentiel implements IReferentiel {
 		}
 	}
 	
-	private Civilite recupererCivParNom(String civNomCourt) throws Exception {
-		if (civNomCourt.equals("M")) {
-			return Civilite.M;
-		} else if (civNomCourt.equals("Mme")) {
-			return Civilite.MME;
-		} else if (civNomCourt.equals("Mlle")) {
-			return Civilite.MLE;
-		} else {
-			throw new Exception("Civilité inconnue");
-		}
-	}
-	
 	private Personne recupererPersonneParChamps(ResultSet rs) throws SQLException, Exception {
 		return new Personne(
 			rs.getInt("pers_id"), this.recupererCivParNom(rs.getString("pers_civilite")), rs.getString("pers_nom"),
@@ -184,5 +173,7 @@ public class JdbcReferentiel implements IReferentiel {
 			rs.getString("pers_cp"), rs.getString("pers_ville")
 		);
 	}
+	
+	
 	
 }

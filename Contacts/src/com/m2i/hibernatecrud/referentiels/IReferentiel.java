@@ -2,6 +2,7 @@ package com.m2i.hibernatecrud.referentiels;
 
 import java.util.List;
 
+import com.m2i.hibernatecrud.entites.Civilite;
 import com.m2i.hibernatecrud.entites.Personne;
 
 public interface IReferentiel {

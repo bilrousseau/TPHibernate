@@ -15,7 +15,7 @@ public class Personne {
 	private Integer id;
 	
 	@Column(name="pers_civilite", nullable=false)
-	private String civilite;
+	private Civilite civilite;
 	
 	@Column(name="pers_nom", nullable=false)
 	private String nom;
@@ -44,7 +44,7 @@ public class Personne {
 	public Personne(Civilite civilite, String nom, String prenom, Date dateNaissance, String numTel, String adresse,
 			String cp, String ville) {
 		super();
-		this.civilite = civilite.getNomCourt();
+		this.civilite = civilite;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.dateNaissance = dateNaissance;
@@ -59,7 +59,7 @@ public class Personne {
 	public Personne(Integer id, Civilite civilite, String nom, String prenom, Date dateNaissance, String numTel,
 			String adresse, String cp, String ville) {
 		this.id = id;
-		this.civilite = civilite.getNomCourt();
+		this.civilite = civilite;
 		this.nom = nom;
 		this.prenom = prenom;
 		this.dateNaissance = dateNaissance;
@@ -71,12 +71,12 @@ public class Personne {
 
 
 
-	public String getCivilite() {
+	public Civilite getCivilite() {
 		return civilite;
 	}
 
 	public void setCivilite(Civilite civilite) {
-		this.civilite = civilite.getNomCourt();
+		this.civilite = civilite;
 	}
 
 	public String getNom() {
