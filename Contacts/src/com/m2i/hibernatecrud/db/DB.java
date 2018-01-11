@@ -47,6 +47,10 @@ public class DB {
 		return getStatement().executeQuery(query);
 	}
 	
+	public static Boolean executeUpdate(String query) throws SQLException {
+		return (getStatement().executeUpdate(query) > 0);
+	}
+	
 	public static Boolean executeDelete(String query) throws SQLException {
 		return (getStatement().executeUpdate(query) > 0);
 	}

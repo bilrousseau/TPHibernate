@@ -14,7 +14,14 @@ public class Tester {
 	public static void main(String[] args) {
 		HibernateReferentiel hibRef = new HibernateReferentiel();
 		JdbcReferentiel jdbcRef = new JdbcReferentiel();
+		//jdbcRef.initialiser();
+		//jdbcRef.supprimerPersonne(18);
+		Personne p1 = new Personne();
+		p1.setAdresse("2 rue du Miroir");
+		p1.setCp("77000");
+		p1.setVille("Melun");
 		
+		jdbcRef.modifierPersonne(17, p1);
 		System.exit(200);
 		Personne p = hibRef.recupererPersonne(1);
 		System.out.println(p);

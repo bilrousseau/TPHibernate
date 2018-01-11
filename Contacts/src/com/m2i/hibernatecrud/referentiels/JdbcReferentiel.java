@@ -11,28 +11,31 @@ import com.m2i.hibernatecrud.entites.Civilite;
 import com.m2i.hibernatecrud.entites.Personne;
 
 public class JdbcReferentiel implements IReferentiel {
-	private List<Personne> listePersonnesStatic;
+	private List<Personne> listePersonnes;
 
 	public JdbcReferentiel() {
-		this.listePersonnesStatic = new ArrayList<Personne>();
+		this.listePersonnes = new ArrayList<Personne>();
+	}
+	
+	public void initialiser() {
+		this.effacerToutesPersonnes();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
-			listePersonnesStatic.add(new Personne(Civilite.M, "Besson", "Luc", sdf.parse("1959-13-18"), "0000000000", "5 avenue de l'Element", "75015", "Paris"));
-			listePersonnesStatic.add(new Personne(Civilite.MME, "Ullmann", "Liv", sdf.parse("1938-12-16"), "0101010101", "1-16-5 Kabuchi-chô", "22", "Tokyo"));
-			listePersonnesStatic.add(new Personne(Civilite.M, "Lynch", "David", sdf.parse("1946-01-20"), "0202020202", "423 Fire Terrace", "59801", "Missoula"));
-			listePersonnesStatic.add(new Personne(Civilite.M, "Chéreau", "Patrice", sdf.parse("1944-11-02"), "0303030303", "13 rue d'Anjou", "49430", "Lezigné"));
-			listePersonnesStatic.add(new Personne(Civilite.M, "Tarantino", "Quentin", sdf.parse("1963-03-27"), "0404040404", "722 Muroran Street", "37909", "Knoxville"));
-			listePersonnesStatic.add(new Personne(Civilite.MLE, "Huppert", "Isabelle", sdf.parse("1953-03-16"), "0505050505", "4 place de Barcelone", "75016", "Paris"));
+			listePersonnes.add(new Personne(Civilite.M, "Besson", "Luc", sdf.parse("1959-13-18"), "0000000000", "5 avenue de l'Element", "75015", "Paris"));
+			listePersonnes.add(new Personne(Civilite.MME, "Ullmann", "Liv", sdf.parse("1938-12-16"), "0101010101", "1-16-5 Kabuchi-chô", "22", "Tokyo"));
+			listePersonnes.add(new Personne(Civilite.M, "Lynch", "David", sdf.parse("1946-01-20"), "0202020202", "423 Fire Terrace", "59801", "Missoula"));
+			listePersonnes.add(new Personne(Civilite.M, "Chéreau", "Patrice", sdf.parse("1944-11-02"), "0303030303", "13 rue d'Anjou", "49430", "Lezigné"));
+			listePersonnes.add(new Personne(Civilite.M, "Tarantino", "Quentin", sdf.parse("1963-03-27"), "0404040404", "722 Muroran Street", "37909", "Knoxville"));
+			listePersonnes.add(new Personne(Civilite.MLE, "Huppert", "Isabelle", sdf.parse("1953-03-16"), "0505050505", "4 place de Barcelone", "75016", "Paris"));
 			
-			for (Personne p : listePersonnesStatic) {
+			for (Personne p : listePersonnes) {
 				this.insererPersonne(p);
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
-	
 	@Override
 	public List<Personne> recupererToutesPersonnes() {
 		return null;
@@ -57,8 +60,8 @@ public class JdbcReferentiel implements IReferentiel {
 			System.out.println(query);
 			return (DB.executeInsert(query) > 0);
 		} catch (SQLException e) {
-			System.out.println("Erreur d'insertion de personne pour le JDBCReferentiel ");
-			System.out.println("Message : " +e.getMessage());
+			System.err.println("Erreur d'insertion de personne pour le JDBCReferentiel ");
+			System.err.println("Message : " +e.getMessage());
 			return false;
 		}
 		
@@ -66,13 +69,61 @@ public class JdbcReferentiel implements IReferentiel {
 	
 	@Override
 	public Boolean modifierPersonne(Integer id, Personne p) {
-		return null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
+			String query = "UPDATE personnes SET ";
+			//TODO : passer par la reflection pour éviter cette forêt de if dégueulasse
+			//TODO : créer un tableau de correspondances entre les champs en base et les propriétés
+			
+			List<String> queryStrings = new ArrayList<String>();
+			
+			if (p.getCivilite() != null)
+				queryStrings.add("pers_civilite = " + DB.parseToSql(p.getCivilite()));
+			if (p.getNom() != null)
+				queryStrings.add("pers_nom = " + DB.parseToSql(p.getNom()));
+			if (p.getPrenom() != null)
+				queryStrings.add("pers_prenom = " + DB.parseToSql(p.getPrenom()));
+			if (p.getDateNaissance() != null)
+				queryStrings.add("pers_datenaissance = " + DB.parseToSql(sdf.format(p.getDateNaissance())));
+			if (p.getNumTel() != null)
+				queryStrings.add("pers_numtel = " + DB.parseToSql(p.getNumTel()));
+			if (p.getAdresse() != null)
+				queryStrings.add("pers_adresse = " + DB.parseToSql(p.getAdresse()));
+			if (p.getCp() != null)
+				queryStrings.add("pers_cp = " + DB.parseToSql(p.getCp()));
+			if (p.getVille() != null)
+				queryStrings.add("pers_ville = " + DB.parseToSql(p.getVille()));
+			
+			for (String queryString : queryStrings) {
+				query += queryString;
+				// Vérifie que je ne suis pas le dernier élément de la liste
+				if (!queryString.equals(queryStrings.get(queryStrings.size() - 1))) {
+					query += ", ";
+				}
+			}
+			query += " WHERE pers_id = " + DB.parseToSql(String.valueOf(id)) + ";";
+
+			System.out.println(query);
+			
+			return DB.executeUpdate(query);
+		} catch (SQLException e) {
+			System.err.println("Erreur de modification de personne");
+			System.err.println("Message : " + e.getMessage());
+			return false;
+		}
+		
 	}
 
 	@Override
 	public Boolean supprimerPersonne(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return DB.executeDelete("DELETE FROM personnes WHERE pers_id = "+DB.parseToSql(String.valueOf(id)) + ";");
+		} catch (SQLException e) {
+			System.err.println("Erreur lors de la suppression de personne.");
+			System.err.println("Message : " + e.getMessage());
+			return false;
+		}
 	}
 
 	@Override
@@ -80,5 +131,16 @@ public class JdbcReferentiel implements IReferentiel {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public Boolean effacerToutesPersonnes() {
+		try {
+			return DB.executeDelete("DELETE FROM personnes");
+		} catch (SQLException e) {
+			System.err.println("Erreur lors de la suppression de personne.");
+			System.err.println("Message : " + e.getMessage());
+			return false;
+		}
+	}
+	
 	
 }
