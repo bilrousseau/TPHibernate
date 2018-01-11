@@ -3,6 +3,7 @@ package com.m2i.hibernatecrud.test;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.m2i.hibernatecrud.entites.Civilite;
 import com.m2i.hibernatecrud.entites.Personne;
@@ -22,6 +23,9 @@ public class Tester {
 		p1.setVille("Melun");
 		
 		jdbcRef.modifierPersonne(17, p1);
+		
+		List<Personne> personnes =  jdbcRef.recupererToutesPersonnes();
+		personnes.forEach(p->System.out.println(p));
 		System.exit(200);
 		Personne p = hibRef.recupererPersonne(1);
 		System.out.println(p);

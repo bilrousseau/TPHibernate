@@ -1,5 +1,6 @@
 package com.m2i.hibernatecrud.referentiels;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,7 +13,7 @@ import com.m2i.hibernatecrud.entites.Personne;
 
 public class JdbcReferentiel implements IReferentiel {
 	private List<Personne> listePersonnes;
-
+	
 	public JdbcReferentiel() {
 		this.listePersonnes = new ArrayList<Personne>();
 	}
@@ -38,12 +39,34 @@ public class JdbcReferentiel implements IReferentiel {
 	}
 	@Override
 	public List<Personne> recupererToutesPersonnes() {
-		return null;
+		List<Personne> toutesPersonnes = new ArrayList<Personne>();
+		try {
+			ResultSet rs = DB.executeSelect("SELECT * FROM personnes");
+			while (rs.next()) {
+				toutesPersonnes.add(this.recupererPersonneParChamps(rs));
+			}
+		} catch (Exception e) {
+			System.out.println("Erreur lors de la récupération des personnes");
+			System.out.println("Message : " + e.getMessage());	
+		}
+		return toutesPersonnes;
+		
 	}
 
 	@Override
 	public Personne recupererPersonne(Integer id) {
-		return null;
+		Personne p = null;
+		try {
+			ResultSet rs = DB.executeSelect("SELECT * FROM personnes WHERE pers_id = " + DB.parseToSql(String.valueOf(id)) + ";");
+			if (rs.next()) {
+				return this.recupererPersonneParChamps(rs);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Erreur lors de la récupération d'une personne");
+			System.out.println();
+		}
+		return p;
 	}
 
 	@Override
@@ -71,12 +94,12 @@ public class JdbcReferentiel implements IReferentiel {
 	public Boolean modifierPersonne(Integer id, Personne p) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			
+			List<String> queryStrings = new ArrayList<String>();
 			String query = "UPDATE personnes SET ";
+			
 			//TODO : passer par la reflection pour éviter cette forêt de if dégueulasse
 			//TODO : créer un tableau de correspondances entre les champs en base et les propriétés
 			
-			List<String> queryStrings = new ArrayList<String>();
 			
 			if (p.getCivilite() != null)
 				queryStrings.add("pers_civilite = " + DB.parseToSql(p.getCivilite()));
@@ -142,5 +165,25 @@ public class JdbcReferentiel implements IReferentiel {
 		}
 	}
 	
+	private Civilite recupererCivParNom(String civNomCourt) throws Exception {
+		if (civNomCourt.equals("M")) {
+			return Civilite.M;
+		} else if (civNomCourt.equals("Mme")) {
+			return Civilite.MME;
+		} else if (civNomCourt.equals("Mlle")) {
+			return Civilite.MLE;
+		} else {
+			throw new Exception("Civilité inconnue");
+		}
+	}
+	
+	private Personne recupererPersonneParChamps(ResultSet rs) throws SQLException, Exception {
+		return new Personne(
+			rs.getInt("pers_id"), this.recupererCivParNom(rs.getString("pers_civilite")), rs.getString("pers_nom"),
+			rs.getString("pers_prenom"), rs.getDate("pers_datenaissance"),
+			rs.getString("pers_numtel"), rs.getString("pers_adresse"),
+			rs.getString("pers_cp"), rs.getString("pers_ville")
+		);
+	}
 	
 }
